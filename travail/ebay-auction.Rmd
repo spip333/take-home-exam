@@ -1,0 +1,18 @@
+---
+title: "ebay auction"
+author: "Nicolas Stern"
+date: "3 janvier 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+
+```{r}
+
+```
