@@ -47,5 +47,30 @@ hat oder nicht.
 -------------
 
 -------------
+TODO
 4. Zeichnen Sie einen farblich geschichteten Boxplot.
+
+Zeichnen Sie einen farblich geschichteten Boxplot: 
+	Y-Achse=Preis, 
+	X-Achse=Gerätetyp, 
+
+farblich geschichtet nach Bewertung (makellos=grün sonst=rot). Orientieren Sie sich z.B. am Vorschlag von “Roger Bivand” im Helpfile zu boxplot(). 
+Exportieren Sie die Grafik als PDF. Erzielen (rein optisch) die Verkäufer mit makellosem Rating einen höheren Verkaufspreis?
+
 -------------
+
+-------------
+WIP
+5. Studieren boxplot Beispiel Roger Bivand
+
+Orientieren Sie sich z.B. am Vorschlag von “Roger Bivand” im Helpfile zu boxplot(). 
+-------------
+
+-------------
+TODO
+6. Exportieren Sie die Grafik als PDF
+
+Exportieren Sie die Grafik als PDF. Erzielen (rein optisch) die Verkäufer mit makellosem Rating einen höheren Verkaufspreis?
+-------------
+
+
