@@ -77,4 +77,9 @@ boxplot(len ~ dose, data = ToothGrowth, add = TRUE,
 legend(2, 9, c("Ascorbic acid", "Orange juice"),
        fill = c("yellow", "orange"))
 
+#========================================================
+## boxplot of the ebay data
+# Zeichnen Sie einen farblich geschichteten Boxplot: Y-Achse=Preis, X-Achse=Gerätetyp, 
+# farblich geschichtet nach Bewertung (makellos=grün sonst=rot). 
+
 

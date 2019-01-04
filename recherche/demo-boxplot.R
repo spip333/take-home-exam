@@ -72,8 +72,17 @@ movies %>%
   summarize(moyenne = mean(director_rating)) %>%
   arrange(desc(moyenne))
   
+###################################################
+# a very simple example
+a <- c(10, 11, 11, 10, 12, 12, 13, 13, 14, 14, 15, 15)
+b <- c(22, 22, 21, 18, 23, 24, 28, 25, 29, 27, 30, 31)
+data <- data.frame(a,b)
+plot.new()
+boxplot (b ~ a, data)
 
-
+# similar, and alos very very simple
+plot.new()
+boxplot(mpg ~hp, mtcars)
 
 
 

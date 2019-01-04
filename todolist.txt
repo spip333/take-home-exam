@@ -69,7 +69,7 @@ Orientieren Sie sich z.B. am Vorschlag von “Roger Bivand” im Helpfile zu box
 -------------
 
 -------------
-TODO
+WIP
 4.2 Zeichnen Sie einen farblich geschichteten Boxplot: 
 	Y-Achse=Preis, 
 	X-Achse=Gerätetyp, 
