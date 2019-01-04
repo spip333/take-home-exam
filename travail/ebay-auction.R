@@ -2,7 +2,6 @@
 # ebay -auction	
 ##########################################################
 
-
 library(dplyr)
 library(foreign)
 

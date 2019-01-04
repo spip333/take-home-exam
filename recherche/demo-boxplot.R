@@ -74,15 +74,32 @@ movies %>%
   
 ###################################################
 # a very simple example
-a <- c(10, 11, 11, 10, 12, 12, 13, 13, 14, 14, 15, 15)
-b <- c(22, 22, 21, 18, 23, 24, 28, 25, 29, 27, 30, 31)
+a <- c(8, 8, 11, 11, 10, 12, 12, 13, 13, 14, 14, 15, 15,10, 11, 11, 10, 12, 12, 13, 13, 14, 14, 15, 15)
+b <- c(1, 1, 22, 21, 18, 23, 24, 28, 25, 29, 27, 30, 31,22, 22, 21, 18, 23, 24, 28, 25, 29, 27, 30, 31)
+length(a)
 data <- data.frame(a,b)
 plot.new()
-boxplot (b ~ a, data)
+boxplot (b ~ a, data, las=2)
+boxplot (b ~ a, data, las=2, xlim = c(0,8))
+
+hist(a)
+
+?boxplot
+boxplot (b ~ a, data, xlim = c(1, 7))
 
 # similar, and alos very very simple
 plot.new()
 boxplot(mpg ~hp, mtcars)
+
+###################################################
+# a very simple example : xlim refers to the indexes
+a <- c(1, 2, 3, 4, 5, 6)
+b <- c(9, 10, 11, 9, 10, 11)
+data <- data.frame(a,b)
+plot.new()
+boxplot (b ~ a, data, las=2)
+boxplot (b ~ a, data, las=2, xlim = c(0,3))
+
 
 
 

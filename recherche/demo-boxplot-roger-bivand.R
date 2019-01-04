@@ -7,6 +7,9 @@
 
 plot.new()
 
+tg <- ToothGrowth
+head(ToothGrowth)
+
 boxplot(len ~ dose, 
         data = ToothGrowth,
         boxwex = 0.25, 
@@ -16,7 +19,9 @@ boxplot(len ~ dose,
         main = "Guinea Pigs' Tooth Growth",
         xlab = "Vitamin C dose mg",
         ylab = "tooth length",
-        xlim = c(0.5, 3.5), ylim = c(0, 35), yaxs = "i")
+        xlim = c(0, 5), 
+        ylim = c(0, 40), 
+        yaxs = "i")
 
 boxplot(len ~ dose, 
         data = ToothGrowth, 
@@ -25,5 +30,5 @@ boxplot(len ~ dose,
         subset = supp == "OJ", 
         col = "orange")
 
-legend(2, 9, c("Ascorbic acid", "Orange juice"),
+legend(1, 9, c("Ascorbic acid", "Orange juice"),
        fill = c("yellow", "orange"))
