@@ -239,9 +239,10 @@ boxplot(pricing$price ~ pricing$categorie,
 
 plot.new()
 
-
-# new version
-ebaynew2 <- ebay %>%
+#========================================================
+# filter out rows where sepos < 12, 
+# add a column "rating" and a column "makellos"
+transformed.ebay <- ebay %>%
   dplyr::filter(sepos >= 12) %>%
   dplyr::filter(sold > 0) %>%
   mutate(
@@ -249,18 +250,26 @@ ebaynew2 <- ebay %>%
     makellos = rating > 0.98
   ) %>%
   dplyr::select(price, model = subcat , rating, makellos)
+#========================================================
+# drop unused levels
+head(transformed.ebay)
+str(transformed.ebay)
+transformed.ebay$type <- droplevels(transformed.ebay$model)
 
-
-ebaynew2$model2 <- droplevels(ebaynew2$model)
-str(ebaynew2)
-
+# simplify labels
+transformed.ebay <- transformed.ebay %>%
+mutate(type = str_replace(type, "\\ \\(\\d+\\)", ""))
+head(transformed.ebay)
+#========================================================
+# plot...
 plot.new()
 
-boxplot(ebaynew2$price ~ ebaynew2$model2,
+boxplot(transformed.ebay$price ~ transformed.ebay$type,
         boxwex = 0.25, 
         at = 1:7 - 0.2,
-        data = ebaynew2,
-        subset = ebaynew2$makellos == TRUE,
+        par(mar = c(12, 5, 4, 2)+ 0.1),
+        data = transformed.ebay,
+        subset = transformed.ebay$makellos == TRUE,
         main = "Mobile phone",
         col = "green",
         xlim = c(0, 8), 
@@ -268,17 +277,62 @@ boxplot(ebaynew2$price ~ ebaynew2$model2,
         yaxs = "i",
         ylab = "Price",
         las=2,
+        xaxt = "n",
         yaxt = "n"
 )
 
-boxplot(ebaynew2$price ~ ebaynew2$model2,
-        col = "orange",
+boxplot(transformed.ebay$price ~ transformed.ebay$type,
+        col = "red",
         boxwex = 0.25, 
-        at = 1:7 + 0.2,
-        data = ebaynew2,
-        subset = ebaynew2$makellos == F,
+        at = 1:7 + 0.1,
+        data = transformed.ebay,
+        subset = transformed.ebay$makellos == F,
         las=2,
         add = T
 )
+
+legend("topright", c("sellers with 98 % or more positive ratings", 
+                     "sellers with less than 98 % positive ratings"), 
+       fill = c("green", "red"))
+################################################################
+# Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten.   
+
+
+# filter out rows where sepos < 12, 
+# add a column "rating" and a column "makellos"
+transformed.ebay.v2 <- ebay %>%
+  dplyr::filter(sepos >= 12) %>%
+  dplyr::filter(sold > 0) %>%
+  mutate(
+    rating =  sepos / (seneg + sepos),
+    makellos = rating > 0.98
+  ) %>%
+  dplyr::select(price, model = subcat , rating, makellos, listpic)
+
+transformed.ebay.v2$type <- droplevels(transformed.ebay$model)
+
+transformed.ebay.v2 <- transformed.ebay.v2 %>%
+  mutate(type = str_replace(type, "\\ \\(\\d+\\)", ""))
+
+head(transformed.ebay.v2)
+
+model.1 <- lm(price ~ type + rating, data = transformed.ebay)
+summary(model.1)
+coef(model.1)
+
+# Modell 2 soll zusätzlich die Variable listpic beinhalten.
+model.2 <- lm(price ~ type + rating + listpic, data = transformed.ebay.v2)
+summary(model.2)
+coef(model.2)
+
+# Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis? 
+# Antwort: Ja, die Verkaufspreise beeinflussen den verkaufspreis mit dem
+#          Koeffizienzintervall von 6.73 
+
+# Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
+library(stargazer)
+stargazer(model.1, model.2, type = "html", style = "qje", out = "model.htm")
+
+?stargazer
 
 

@@ -30,14 +30,22 @@ transformed.ebay <- ebay %>%
 #========================================================
 # drop unused levels
 head(transformed.ebay)
+
 str(transformed.ebay)
+
 transformed.ebay$type <- droplevels(transformed.ebay$model)
+
+transformed.ebay <- transformed.ebay %>%
+  mutate(type = str_replace(type, "\\ \\(\\d+\\)", ""))
+
 #========================================================
 # plot...
-plot.new()
+pdf("ebayMobilAuktion.pdf")
+
 boxplot(transformed.ebay$price ~ transformed.ebay$type,
         boxwex = 0.25, 
         at = 1:7 - 0.2,
+        par(mar = c(12, 5, 4, 2)+ 0.1),
         data = transformed.ebay,
         subset = transformed.ebay$makellos == TRUE,
         main = "Mobile phone",
@@ -46,20 +54,26 @@ boxplot(transformed.ebay$price ~ transformed.ebay$type,
         ylim = c(50, 350),
         yaxs = "i",
         ylab = "Price",
-        las=3,
+        las=2,
+        xaxt = "n",
         yaxt = "n"
 )
 
 boxplot(transformed.ebay$price ~ transformed.ebay$type,
-        col = "orange",
+        col = "red",
         boxwex = 0.25, 
-        at = 1:7 + 0.2,
+        at = 1:7 + 0.1,
         data = transformed.ebay,
         subset = transformed.ebay$makellos == F,
-        las=3,
+        las=2,
         add = T
 )
 
+legend("bottomleft", c("Verkäufer mit makellos ratings (über 98 % positive ratings)", 
+                     "Verkäufer mit weniger als 98 % positive ratings"), 
+       fill = c("green", "red"))
+
+dev.off()
 
 
 

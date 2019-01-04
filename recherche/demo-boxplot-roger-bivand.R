@@ -27,5 +27,7 @@ boxplot(len ~ dose,
         subset = supp == "OJ", 
         col = "orange")
 
-legend(1, 9, c("Ascorbic acid", "Orange juice"),
+legend(1, 7, c("Ascorbic acid", "Orange juice"),
        fill = c("yellow", "orange"))
+
+legend(4, 9, c("x", "y"), fill = c("red", "orange"))
