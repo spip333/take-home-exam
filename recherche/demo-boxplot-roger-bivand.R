@@ -3,12 +3,9 @@
 # 
 # example taken from helpfile from Roger Bivand
 #
-##########################################################
-
-plot.new()
-
-tg <- ToothGrowth
+#########################################################
 head(ToothGrowth)
+plot.new()
 
 boxplot(len ~ dose, 
         data = ToothGrowth,

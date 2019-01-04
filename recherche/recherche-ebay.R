@@ -238,28 +238,9 @@ boxplot(pricing$price ~ pricing$categorie,
 )
 
 plot.new()
-boxplot(pricing$price ~ pricing$categorie,
-        boxwex = 0.25, 
-        at = 1:7 - 0.2,
-        data = pricing,
-        subset = pricing$makellos == TRUE,
-        main = "Mobile phone",
-        col = "green",
-        xlim = c(0.5, 7.5), 
-        ylim = c(50, 400),
-        yaxs = "i",
-        ylab = "Price",
-        las=3,
-        yaxt = "n"
-)
 
-head(pricing)
-head(ebaynew2)
 
-nrow(pricing)
-nrow(ebaynew2)
-
-# new versiton
+# new version
 ebaynew2 <- ebay %>%
   dplyr::filter(sepos >= 12) %>%
   dplyr::filter(sold > 0) %>%
@@ -269,12 +250,12 @@ ebaynew2 <- ebay %>%
   ) %>%
   dplyr::select(price, model = subcat , rating, makellos)
 
-head(pricing)
-head(ebaynew2)
 
-str(pricing)
+ebaynew2$model2 <- droplevels(ebaynew2$model)
+str(ebaynew2)
 
 plot.new()
+
 boxplot(ebaynew2$price ~ ebaynew2$model2,
         boxwex = 0.25, 
         at = 1:7 - 0.2,
@@ -286,7 +267,7 @@ boxplot(ebaynew2$price ~ ebaynew2$model2,
         ylim = c(50, 350),
         yaxs = "i",
         ylab = "Price",
-        las=3,
+        las=2,
         yaxt = "n"
 )
 
@@ -296,21 +277,8 @@ boxplot(ebaynew2$price ~ ebaynew2$model2,
         at = 1:7 + 0.2,
         data = ebaynew2,
         subset = ebaynew2$makellos == F,
-        las=3,
+        las=2,
         add = T
 )
 
-
-?boxplot
-
-factors(pricing$model)
-
-Filter(is.factor, ebaynew2)
-
-levels(pricing$model)
-levels(ebaynew2$model)
-ebaynew2$model2 <- droplevels(ebaynew2$model)
-
-head(ebaynew2)
-levels(ebaynew2$model2)
 
