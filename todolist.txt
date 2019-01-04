@@ -1,11 +1,12 @@
 =================================================
 Prochaines actions
 =================================================
-- réviser boxplot
-- étudier Vorschlag von “Roger Bivand” im Helpfile zu boxplot()
 - réviser cleanup data (ch. 15.1)
 - réviser xml import
 
+
++ réviser boxplot
++ étudier Vorschlag von “Roger Bivand” im Helpfile zu boxplot()
 =================================
 Work backlog
 =================================
@@ -13,7 +14,7 @@ Work backlog
 	+ import
 	+ Erzeugen Sie eine Variable rating
 	+ Bilden Sie zudem eine Variable makellos 
-	- Zeichnen Sie einen farblich geschichteten Boxplot.
+	> Zeichnen Sie einen farblich geschichteten Boxplot.
 	- Rechnen Sie zwei kleine Regressionsmodelle für den Preis von verkauften Geräten
 		- Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten. 
 		- Modell 2 soll zusätzlich die Variable listpic beinhalten.
@@ -47,28 +48,37 @@ hat oder nicht.
 -------------
 
 -------------
-TODO
+WIP -> Has subtasks
 4. Zeichnen Sie einen farblich geschichteten Boxplot.
 
 Zeichnen Sie einen farblich geschichteten Boxplot: 
 	Y-Achse=Preis, 
 	X-Achse=Gerätetyp, 
 
-farblich geschichtet nach Bewertung (makellos=grün sonst=rot). Orientieren Sie sich z.B. am Vorschlag von “Roger Bivand” im Helpfile zu boxplot(). 
-Exportieren Sie die Grafik als PDF. Erzielen (rein optisch) die Verkäufer mit makellosem Rating einen höheren Verkaufspreis?
-
+farblich geschichtet nach Bewertung (makellos=grün sonst=rot). 
+Orientieren Sie sich z.B. am Vorschlag von “Roger Bivand” im Helpfile zu boxplot(). 
+Exportieren Sie die Grafik als PDF.
+Erzielen (rein optisch) die Verkäufer mit makellosem Rating einen höheren Verkaufspreis?
 -------------
 
 -------------
-WIP
-5. Studieren boxplot Beispiel Roger Bivand
+DONE
+4.1. Studieren boxplot Beispiel Roger Bivand
 
 Orientieren Sie sich z.B. am Vorschlag von “Roger Bivand” im Helpfile zu boxplot(). 
 -------------
 
 -------------
 TODO
-6. Exportieren Sie die Grafik als PDF
+4.2 Zeichnen Sie einen farblich geschichteten Boxplot: 
+	Y-Achse=Preis, 
+	X-Achse=Gerätetyp, 
+farblich geschichtet nach Bewertung (makellos=grün sonst=rot). 
+-------------
+
+-------------
+TODO
+4.3. Exportieren Sie die Grafik als PDF
 
 Exportieren Sie die Grafik als PDF. Erzielen (rein optisch) die Verkäufer mit makellosem Rating einen höheren Verkaufspreis?
 -------------
