@@ -37,10 +37,10 @@ nrow(ebay[ebay$sepos<12,])
 
 # Check that we have only numerical values in rating
 hist(ebaynew$rating)
-rm (tmp)
 tmp <- is.na(ebaynew$rating)
 tmp[tmp==T] # OK: Zero
 tmp[tmp==F]
+rm (tmp)
 
 # check that we have only T / F in makellos
 str(ebaynew)
@@ -50,8 +50,7 @@ nrow(ebaynew) == nrow(ebaynew[ebaynew$makellos==TRUE,]) + nrow(ebaynew[ebaynew$m
 
 #========================================================
 # variable makellos
-ebay$makellos <- ebay$rating >= 0.98
-head(ebay)
+# ebay$makellos <- ebay$rating >= 0.98
 
 #========================================================
 # BOXPLOT
@@ -85,12 +84,91 @@ legend(2, 9, c("Ascorbic acid", "Orange juice"),
 # finde den mittleren preis per typ
 head(ebaynew)
 
+# from titanic sample...
 titanic %>%
   mutate(child = ifelse(age2 < 18, "yes", "no")) %>%
   group_by(sex, child, survived) %>%
   summarise(n=n()) %>%
   arrange(sex, child, survived)
+#...
 
+# finde den mittleren preis per typ: using group by type
 ebaynew %>%
-  group_by(subcat)
+  group_by(subcat) %>%
+  summarise(tot=sum(price)) %>%
+  head() 
+# ... -> don't work : price NA. why??
 
+# finde how many sold of one type?den mittleren preis per typ: using group by type
+ebaynew %>%
+  filter(subcat == "Sony T610 (1)") %>% 
+  filter(sold != 0) %>% 
+  dplyr::select(sold) %>%
+  sum()
+
+# does sum in the data values works when there are na ?
+x1 <- c("andy", "bernie", "andy", "cliff", "alice", "alice", "frank", "debbie", "frank")
+y1 <- c(NA,3,2,5,NA,6,6,4,5)
+
+mydata <- data.frame(x1, y1) 
+mydata
+
+mydata %>%
+  group_by(x1) %>%
+  summarise(tot = sum(y1)) %>%
+  head()
+# sum returns NA when one data is NA
+
+# finde den mittleren preis per typ: using group by type
+ebaynew %>%
+  group_by(subcat) %>%
+  summarise(tot=sum(price)) %>%
+  head() 
+# the above doesn't work, because sum returns NA when one data is NA
+# .. but the following will work:
+sum(ebaynew$price, na.rm = T)
+# fact: exlude rows where price is null
+
+# finde den mittleren preis per typ (second try): using group by type, excluding not sold items
+# step1 : filter out not sold items
+ebaynew %>%
+  dplyr::filter(is.na(price) == F) %>%
+  nrow
+
+# step2-1 : compute total price per type 
+ebaynew %>%
+  dplyr::filter(is.na(price) == FALSE) %>%
+  group_by(subcat) %>%
+  summarise(totalPrice=sum(price)) %>%
+  head() 
+
+# step2-2 : compute avg price per type and group by subcat, makellos
+theData <- ebaynew %>%
+  dplyr::filter(is.na(price) == FALSE) %>%
+  group_by(subcat, makellos) %>%
+  summarise(avgPrice=mean(price)) %>%
+  arrange(subcat, makellos)
+  
+# can we get a plot??
+plot.new()
+
+boxplot(avgPrice ~ subcat, 
+        data = theData,
+        subset = makellos == T, 
+        main = "ebay",
+        xlab = "type",
+        ylab = "avg price")
+
+boxplot(len ~ dose, 
+        data = ToothGrowth, 
+        add = TRUE,
+        boxwex = 0.25, at = 1:3 + 0.2,
+        subset = supp == "OJ", 
+        col = "orange")
+
+legend(2, 9, c("Ascorbic acid", "Orange juice"),
+       fill = c("yellow", "orange"))
+
+
+
+?boxplot
