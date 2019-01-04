@@ -152,8 +152,8 @@ theData <- ebaynew %>%
 # can we get a plot??
 plot.new()
 
-boxplot(avgPrice ~ subcat, 
-        data = theData,
+boxplot(price ~ subcat, 
+        data = ebaynew,
         subset = makellos == T, 
         main = "ebay",
         xlab = "type",
