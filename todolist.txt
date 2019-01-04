@@ -48,7 +48,7 @@ hat oder nicht.
 -------------
 
 -------------
-WIP -> Has subtasks
+WIP -> Has subtasks 4.1, 4.2, 4.3
 4. Zeichnen Sie einen farblich geschichteten Boxplot.
 
 Zeichnen Sie einen farblich geschichteten Boxplot: 
@@ -69,11 +69,21 @@ Orientieren Sie sich z.B. am Vorschlag von “Roger Bivand” im Helpfile zu box
 -------------
 
 -------------
-WIP
+WIP -> has subtasks 4.2.1
 4.2 Zeichnen Sie einen farblich geschichteten Boxplot: 
+
 	Y-Achse=Preis, 
 	X-Achse=Gerätetyp, 
 farblich geschichtet nach Bewertung (makellos=grün sonst=rot). 
+
+-------------
+
+-------------
+WIP
+4.2.1 finde den preis per geraetetyp (makellos vs nicht makellos)
+
+
+
 -------------
 
 -------------

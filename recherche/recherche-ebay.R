@@ -82,4 +82,15 @@ legend(2, 9, c("Ascorbic acid", "Orange juice"),
 # Zeichnen Sie einen farblich geschichteten Boxplot: Y-Achse=Preis, X-Achse=Gerätetyp, 
 # farblich geschichtet nach Bewertung (makellos=grün sonst=rot). 
 
+# finde den mittleren preis per typ
+head(ebaynew)
+
+titanic %>%
+  mutate(child = ifelse(age2 < 18, "yes", "no")) %>%
+  group_by(sex, child, survived) %>%
+  summarise(n=n()) %>%
+  arrange(sex, child, survived)
+
+ebaynew %>%
+  group_by(subcat)
 
