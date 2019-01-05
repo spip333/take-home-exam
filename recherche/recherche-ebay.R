@@ -309,6 +309,7 @@ transformed.ebay.v2 <- ebay %>%
   ) %>%
   dplyr::select(price, model = subcat , rating, makellos, listpic)
 
+
 transformed.ebay.v2$type <- droplevels(transformed.ebay$model)
 
 transformed.ebay.v2 <- transformed.ebay.v2 %>%
@@ -332,7 +333,4 @@ coef(model.2)
 # Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
 library(stargazer)
 stargazer(model.1, model.2, type = "html", style = "qje", out = "model.htm")
-
-?stargazer
-
 
