@@ -4,6 +4,7 @@
 
 library(dplyr)
 library(foreign)
+library(stringr)
 
 #========================================================
 # init environment
@@ -23,19 +24,13 @@ transformed.ebay <- ebay %>%
   dplyr::filter(sepos >= 12) %>%
   dplyr::filter(sold > 0) %>%
   mutate(
+    model = str_trim(sub("\\(.+\\)", "", subcat)),
     rating =  sepos / (seneg + sepos),
     makellos = rating > 0.98
   ) %>%
-  dplyr::select(price, model = subcat , rating, makellos, listpic)
+  dplyr::select(price, model, rating, makellos, listpic)
 #========================================================
-# drop unused levels
-head(transformed.ebay)
-
 str(transformed.ebay)
-
-# drop unused levels
-transformed.ebay$model <- droplevels(transformed.ebay$model)
-
 
 #========================================================
 # plot...
@@ -91,7 +86,8 @@ coef(model.2)
 
 # Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
 library(stargazer)
-stargazer(model.1, model.2, type = "html", style = "qje", out = "model.htm")
+stargazer(model.1, model.2, type = "html", style = "default", out = "model.htm")
 
 
+?stargazer
 

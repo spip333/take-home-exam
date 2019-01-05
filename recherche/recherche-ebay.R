@@ -334,3 +334,55 @@ coef(model.2)
 library(stargazer)
 stargazer(model.1, model.2, type = "html", style = "qje", out = "model.htm")
 
+# string manip
+
+library(stringr)
+str_sub("test", 1, str_length("test")-3)
+substring("test", 1, str_length("test")-3)
+?instring
+
+? ("")
+
+grep("\\(", "test (1)")
+
+x <- gregexpr(pattern ="\\(","test (1)")
+typeof(x)
+
+x
+
+x <- c("This is a sentence about axis", "A second pattern is also listed here")
+sub("is", "XY", x)
+
+library (gdata)
+
+str_trim(sub("\\(.+\\)", "", "test (10)"))
+
+
+###########################################3
+# model
+install.packages("car")
+install.packages("lme4")
+install.packages("rgl")
+
+install.packages("packageurl", repos=NULL, type="source")
+library(car) 
+
+
+# alternativ, falls car Probleme mit Abhaenigkeiten macht: 
+# Prestige <- read.csv("http://farys.org/daten/Prestige.csv")
+
+# Für folgendes Beispiel brauchen wir jedoch die Funktion scatter3d() aus car. 
+# Das Dependency Problem lässt sich ggf. so lösen:
+# install.packages("lme4") # dependency für altes pbkrtest
+
+# packageurl <- "https://cran.r-project.org/src/contrib/Archive/pbkrtest/pbkrtest_0.4-4.tar.gz"
+# install.packages(packageurl, repos=NULL, type="source") # von hand installieren
+# install.packages("car") # jetzt car installieren mit denmanuell installierten dependencies
+# library(car)
+
+# Wie kann man sich eine Regression mit zwei erklärenden Variablen vorstellen?
+# Als Ebene durch eine 3d Punktewolke!
+
+scatter3d(Prestige$income,Prestige$prestige,Prestige$education, fit="linear") 
+
+fit <- lm(prestige ~ education + income, data=Prestige)
