@@ -26,23 +26,22 @@ transformed.ebay <- ebay %>%
     rating =  sepos / (seneg + sepos),
     makellos = rating > 0.98
   ) %>%
-  dplyr::select(price, model = subcat , rating, makellos)
+  dplyr::select(price, model = subcat , rating, makellos, listpic)
 #========================================================
 # drop unused levels
 head(transformed.ebay)
 
 str(transformed.ebay)
 
-transformed.ebay$type <- droplevels(transformed.ebay$model)
+# drop unused levels
+transformed.ebay$model <- droplevels(transformed.ebay$model)
 
-transformed.ebay <- transformed.ebay %>%
-  mutate(type = str_replace(type, "\\ \\(\\d+\\)", ""))
 
 #========================================================
 # plot...
 pdf("ebayMobilAuktion.pdf")
 
-boxplot(transformed.ebay$price ~ transformed.ebay$type,
+boxplot(transformed.ebay$price ~ transformed.ebay$model,
         boxwex = 0.25, 
         at = 1:7 - 0.2,
         par(mar = c(12, 5, 4, 2)+ 0.1),
@@ -59,7 +58,7 @@ boxplot(transformed.ebay$price ~ transformed.ebay$type,
         yaxt = "n"
 )
 
-boxplot(transformed.ebay$price ~ transformed.ebay$type,
+boxplot(transformed.ebay$price ~ transformed.ebay$model,
         col = "red",
         boxwex = 0.25, 
         at = 1:7 + 0.1,
@@ -74,6 +73,25 @@ legend("bottomleft", c("Verkäufer mit makellos ratings (über 98 % positive rat
        fill = c("green", "red"))
 
 dev.off()
+
+################################################################
+# Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten.   
+
+model.1 <- lm(price ~ model + rating, data = transformed.ebay)
+summary(model.1)
+coef(model.1)
+
+model.2 <- lm(price ~ model + rating + listpic, data = transformed.ebay)
+summary(model.2)
+coef(model.2)
+
+# Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis? 
+# Antwort: Ja, die Verkaufspreise beeinflussen den verkaufspreis mit dem
+#          Koeffizienzintervall von 6.73 
+
+# Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
+library(stargazer)
+stargazer(model.1, model.2, type = "html", style = "qje", out = "model.htm")
 
 
 
