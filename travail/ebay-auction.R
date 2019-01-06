@@ -34,12 +34,14 @@ str(transformed.ebay)
 
 #========================================================
 # plot...
-pdf("ebayMobilAuktion.pdf")
+#pdf("ebayMobilAuktion.pdf")
+
+plot.new()
 
 boxplot(transformed.ebay$price ~ transformed.ebay$model,
         boxwex = 0.25, 
         at = 1:7 - 0.2,
-        par(mar = c(12, 5, 4, 2)+ 0.1),
+        par(mar = c(9, 5, 4, 2)+ 0.1),
         data = transformed.ebay,
         subset = transformed.ebay$makellos == TRUE,
         main = "Mobile phone",
@@ -64,10 +66,17 @@ boxplot(transformed.ebay$price ~ transformed.ebay$model,
 )
 
 legend("bottomleft", c("Verkäufer mit makellos ratings (über 98 % positive ratings)", 
-                     "Verkäufer mit weniger als 98 % positive ratings"), 
+                     "Verkäufer mit weniger als 98 % positive ratings"),bty="n",
+       text.font = 1,
        fill = c("green", "red"))
 
-dev.off()
+mtext("Time", side = 1, line = 7, cex = 1, font = 1)
+
+
+?legend
+
+
+#dev.off()
 
 ################################################################
 # Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten.   
@@ -89,5 +98,4 @@ library(stargazer)
 stargazer(model.1, model.2, type = "html", style = "default", out = "model.htm")
 
 
-?stargazer
 

@@ -1,5 +1,5 @@
 ---
-title: "ebay auction"
+title: "Take Home Exam"
 author: "Nicolas Stern"
 date: "3 janvier 2019"
 output: html_document
@@ -9,43 +9,95 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+CAS - Datenanalyse 2018-2019, Lösung zur Take-Home Exam, Fach Tooling und Datenmanagment
 
-
-
-```{r}
+```{r message=FALSE}
+# init environment
+options(warn=-1)
 library(dplyr)
 library(foreign)
 library(stringr)
+library(stargazer)
+```
 
-# init environment
-rm(list = ls())
+# Ebay-Auktionen
 
-# load data
+## Aufgabe
+
+Laden Sie die Daten http://www.farys.org/daten/ebay.dta. Es handelt sich um Ebaydaten von Mobiltelefonauktionen.
+
+- Die Variablen sind:
+    - sold: Ob das Mobiltelefon verkauft wurde  
+    - price: Der erzielte Verkauftspreis
+    - sprice: Der Startpreis der Auktion
+    - sepos: Anzahl positiver Bewertungen des Verkäufers
+    - seneg: Anzahl negativer Bewertungen des Verkäufers
+    - subcat: Das Modell des Mobiltelefons
+    - listpic: Kategorialer Indikator, ob die Auktion ein Thumbnail, ein “has-picture-icon” oder kein Thumbnail hat.
+    - listbold: Dummy, ob die Auktion fettgedruckt gelistet ist
+    - sehasme: Dummy, ob der Verkäufer eine “Me-page” hat oder nicht
+
+Sie interessieren sich dafür, ob Mobiltelefone bei Auktionen einen höheren Preis erzielen, wenn der Verkäufer des Geräts eine gute Bewertung hat. Erzeugen Sie eine Variable rating, die den Anteil positiver Bewertungen an den Gesamtbewertungen misst. Schliessen Sie Fälle aus den Daten aus, für die weniger als 12 positive Bewertungen vorliegen.
+
+Bilden Sie zudem eine Variable makellos (TRUE/FALSE), ob der Verkäufer ein makelloses Rating (>98% positive Bewertungen) hat oder nicht.
+
+Zeichnen Sie einen farblich geschichteten Boxplot: Y-Achse=Preis, X-Achse=Gerätetyp, farblich geschichtet nach Bewertung (makellos=grün sonst=rot). Orientieren Sie sich z.B. am Vorschlag von “Roger Bivand” im Helpfile zu boxplot(). Exportieren Sie die Grafik als PDF. Erzielen (rein optisch) die Verkäufer mit makellosem Rating einen höheren Verkaufspreis?
+
+Rechnen Sie zwei kleine Regressionsmodelle für den Preis von verkauften Geräten. Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten. Modell 2 soll zusätzlich die Variable listpic beinhalten. Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis? Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
+
+## Lösung Schritt per Schritt 
+
+### Daten Laden und vorbereiten
+
+- Daten laden: 
+```{r}
 ebay <- read.dta("http://www.farys.org/daten/ebay.dta")
 
-# examine data
-str(ebay)
+# examine data after loading
 head(ebay)
+```
 
-# transform data for analysis : 
-# filter out rows where the number of positive ratings is less than 12, 
-# add a column "rating" and a column "makellos"
+- Daten für die Analyse vorbereiten: 
+    - Rausfiltern der Datensätze, bei welcher weniger als 12 positiven ratings vorliegen 
+    - Neue Spalten "rating" und "makellos" hinzufügen
+    - Zusätzlich zur Vorgabe eliminiren wir auch die Datensätze, die den Wert "0" im Attribut "sold" haben, weil für diese Datensätze, gibt es kein Verkaufspreis. 
+
+```{r}
 transformed.ebay <- ebay %>%
-  dplyr::filter(sepos >= 12) %>%
-  dplyr::filter(sold > 0) %>%
+  dplyr::filter(sepos >= 12) %>% # filter out rows with < 12 positive ratings
+  dplyr::filter(sold > 0) %>% # filter out rows which did not lead to a sale
   mutate(
-    model = str_trim(sub("\\(.+\\)", "", subcat)),
-    rating =  sepos / (seneg + sepos),
-    makellos = rating > 0.98
+    rating =  sepos / (seneg + sepos), # new column rating (proportion of positive ratings)
+    makellos = rating > 0.98 # new column makellos, logical attribute for rows with > 98% positiv ratings
   ) %>%
-  dplyr::select(price, model, rating, makellos, listpic)
+  dplyr::select(price, model = subcat, rating, makellos, listpic) 
 
-# examine data after transformation
-str(transformed.ebay)
+# Daten nach Transformation prüfen:
 head(transformed.ebay)
+str(transformed.ebay)
+```
+- An dieser Stelle kann man folgendes feststellen: 
+    - es sind 106 Levels im Attribut "subcat". Unbenötigten Levels sollen gelöscht werden.
+    - die Handy Modelnamen haben alle eine Endung im Klammer, die die Lesbarkeit verschlechtert. Mit String Manipulation sollten die Handy-Namen gekürzt werden.
+    
+```{r}
+# drop unused levels
+transformed.ebay <- droplevels(transformed.ebay)
 
-pdf("ebayMobilAuktion.pdf")
+# remove "(xy)" ending in the cell phone names
+transformed.ebay$model <- str_trim(sub("\\(.+\\)", "", transformed.ebay$model))
+
+# examine how the data looks now
+head(transformed.ebay)
+```
+- In dieser Form sind die Daten bereit für eine grafische Darstellung.
+
+### Daten grafisch darstellen
+
+- Erstellen eines Boxplots
+
+```{r}
+pdf("ebayMobilAuktionDaten.pdf")
 
 boxplot(transformed.ebay$price ~ transformed.ebay$model,
         boxwex = 0.25, 
@@ -53,12 +105,12 @@ boxplot(transformed.ebay$price ~ transformed.ebay$model,
         par(mar = c(12, 5, 4, 2)+ 0.1),
         data = transformed.ebay,
         subset = transformed.ebay$makellos == TRUE,
-        main = "Mobile phone",
+        main = "Handy Verkäufe - Einfluss der Ratings auf dem Verkaufspreis",
         col = "green",
         xlim = c(0, 8), 
         ylim = c(50, 350),
         yaxs = "i",
-        ylab = "Price",
+        ylab = "Preis",
         las=2,
         xaxt = "n",
         yaxt = "n"
@@ -69,31 +121,47 @@ boxplot(transformed.ebay$price ~ transformed.ebay$model,
         boxwex = 0.25, 
         at = 1:7 + 0.1,
         data = transformed.ebay,
-        subset = transformed.ebay$makellos == F,
+        subset = transformed.ebay$makellos == FALSE,
         las=2,
         add = T
 )
 
-legend("bottomleft", c("Verkäufer mit makellos ratings (über 98 % positive ratings)", 
-                     "Verkäufer mit weniger als 98 % positive ratings"), 
+legend("bottomleft", 
+       c("Verkäufer mit mehr als 98 % positive ratings (Makellos = TRUE))", 
+         "Verkäufer mit weniger als 98 % positive ratings (Makellos = FALSE)"),
+       cex=0.75,
+       bty="n",       
        fill = c("green", "red"))
 
+mtext("Handy Modell", side = 1, line = 7, cex = 1)
 dev.off()
+```
 
+- Erzielen (rein optisch) die Verkäufer mit makellosem Rating einen höheren Verkaufspreis?
+
+    - Antwort : beim betrachten der erstellten Grafik ist es nicht ersichtlich, ob ein makellosen Rating einen Einfluss auf dem Preis hat. 
+
+### Auswertung
+
+- Erstellen von 2 Modellen. 
+
+```{r}
 # Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten.   
 model.1 <- lm(price ~ model + rating, data = transformed.ebay)
 summary(model.1)
 coef(model.1)
 
+# Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten.   
 model.2 <- lm(price ~ model + rating + listpic, data = transformed.ebay)
 summary(model.2)
 coef(model.2)
+```
 
-# Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis? 
-# Antwort: Ja, die Verkaufspreise beeinflussen den verkaufspreis mit dem
-#          Koeffizienzintervall von 6.73 
+- Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis? 
+    - Antwort: Ja, die Verkaufspreise beeinflussen den verkaufspreis mit dem Koeffizienzintervall von 6.73 
 
-# Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
-library(stargazer)
+- Exportieren einer Regressionstabelle, die beide Modelle beinhaltet.
+
+```{r results='hide'}
 stargazer(model.1, model.2, type = "html", style = "default", out = "model.htm")
 ```
