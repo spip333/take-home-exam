@@ -50,20 +50,23 @@ Rechnen Sie zwei kleine Regressionsmodelle für den Preis von verkauften Geräte
 
 ## Lösung Schritt per Schritt 
 
-### Daten Laden und vorbereiten
+### Daten Laden
 
-- Daten laden: 
 ```{r}
+# load data
 ebay <- read.dta("http://www.farys.org/daten/ebay.dta")
+
+# export locally to keep a copy
+write.dta(ebay, "ebay.dta")
 
 # examine data after loading
 head(ebay)
 ```
 
-- Daten für die Analyse vorbereiten: 
-    - Rausfiltern der Datensätze, bei welcher weniger als 12 positiven ratings vorliegen 
-    - Neue Spalten "rating" und "makellos" hinzufügen
-    - Zusätzlich zur Vorgabe eliminieren wir auch die Datensätze, die den Wert "0" im Attribut "sold" haben, weil für diese Datensätze, gibt es kein Verkaufspreis. Das ist ein Entscheid, das man vor Auge behalten soll, wenn man versucht, die Resultate zu interpretieren, weil die Anzahl nicht verkäufte Sätze nicht vernachlässigbar ist:
+### Daten für die Analyse vorbereiten: 
+- Rausfiltern der Datensätze, bei welcher weniger als 12 positiven ratings vorliegen 
+- Neue Spalten "rating" und "makellos" hinzufügen
+- Zusätzlich zur Vorgabe eliminieren wir auch die Datensätze, die den Wert "0" im Attribut "sold" haben, weil für diese Datensätze, gibt es kein Verkaufspreis. Das ist ein Entscheid, das man vor Auge behalten soll, wenn man versucht, die Resultate zu interpretieren, weil die Anzahl nicht verkäufte Sätze nicht vernachlässigbar ist:
 
 ```{r}
 # number of not sold phones:
@@ -169,8 +172,6 @@ model.2 <- lm(price ~ model + rating + listpic, data = transformed.ebay)
 summary(model.2)
 coef(model.2)
 ```
-
-
 
 #### Interpretation:
 

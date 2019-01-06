@@ -132,7 +132,8 @@ $(document).ready(function () {
 <li><a href="#ebay-auktionen">Ebay-Auktionen</a><ul>
 <li><a href="#aufgabe">Aufgabe</a></li>
 <li><a href="#losung-schritt-per-schritt">Lösung Schritt per Schritt</a><ul>
-<li><a href="#daten-laden-und-vorbereiten">Daten Laden und vorbereiten</a></li>
+<li><a href="#daten-laden">Daten Laden</a></li>
+<li><a href="#daten-fur-die-analyse-vorbereiten">Daten für die Analyse vorbereiten:</a></li>
 <li><a href="#daten-grafisch-darstellen">Daten grafisch darstellen</a></li>
 <li><a href="#auswertung">Auswertung</a></li>
 <li><a href="#exportieren-einer-regressionstabelle-die-beide-modelle-beinhaltet.">Exportieren einer Regressionstabelle, die beide Modelle beinhaltet.</a></li>
@@ -179,12 +180,13 @@ library(stargazer)</code></pre>
 </div>
 <div id="losung-schritt-per-schritt" class="section level2">
 <h2>Lösung Schritt per Schritt</h2>
-<div id="daten-laden-und-vorbereiten" class="section level3">
-<h3>Daten Laden und vorbereiten</h3>
-<ul>
-<li>Daten laden:</li>
-</ul>
-<pre class="r"><code>ebay &lt;- read.dta(&quot;http://www.farys.org/daten/ebay.dta&quot;)
+<div id="daten-laden" class="section level3">
+<h3>Daten Laden</h3>
+<pre class="r"><code># load data
+ebay &lt;- read.dta(&quot;http://www.farys.org/daten/ebay.dta&quot;)
+
+# export locally to keep a copy
+write.dta(ebay, &quot;ebay.dta&quot;)
 
 # examine data after loading
 head(ebay)</code></pre>
@@ -202,13 +204,13 @@ head(ebay)</code></pre>
 ## 4    11     0       0
 ## 5    16     0       0
 ## 6    81     1       1</code></pre>
-<ul>
-<li>Daten für die Analyse vorbereiten:
+</div>
+<div id="daten-fur-die-analyse-vorbereiten" class="section level3">
+<h3>Daten für die Analyse vorbereiten:</h3>
 <ul>
 <li>Rausfiltern der Datensätze, bei welcher weniger als 12 positiven ratings vorliegen</li>
 <li>Neue Spalten “rating” und “makellos” hinzufügen</li>
 <li>Zusätzlich zur Vorgabe eliminieren wir auch die Datensätze, die den Wert “0” im Attribut “sold” haben, weil für diese Datensätze, gibt es kein Verkaufspreis. Das ist ein Entscheid, das man vor Auge behalten soll, wenn man versucht, die Resultate zu interpretieren, weil die Anzahl nicht verkäufte Sätze nicht vernachlässigbar ist:</li>
-</ul></li>
 </ul>
 <pre class="r"><code># number of not sold phones:
 nrow(ebay [ebay$sold == 0,])</code></pre>
