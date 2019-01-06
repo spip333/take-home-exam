@@ -446,12 +446,11 @@ summary(model.2)</code></pre>
 # load data
 url &lt;- &quot;https://de.wikipedia.org/wiki/Bern#Klima&quot;
 
-download.file(url, destfile = 'bern-klima.html')
-bern.klima &lt;- read_html('bern-klima.html')
-klima.data &lt;- html_table(bern.klima,fill=TRUE,header=TRUE)[[6]]
+download.file(url, destfile = 'klima-daten-bern-wikipedia.html')
+klima.data.raw &lt;- read_html('klima-daten-bern-wikipedia.html')
+klima.data &lt;- html_table(klima.data.raw, fill=TRUE, header=TRUE)[[6]]
 
-#========================================================
-# task 1 : only 3 first lines
+# filtriren die Zeilen mit Spaltennamen, min und max
 klima.data.1 &lt;- klima.data[1:2,]
 klima.data.1</code></pre>
 <pre><code>##                         Jan  Feb Mär  Apr  Mai  Jun  Jul  Aug  Sep  Okt
@@ -460,12 +459,27 @@ klima.data.1</code></pre>
 ##   Nov  Dez       
 ## 1 7,3  3,5 Ø 13,5
 ## 2 0,4 -2,3 Ø  4,3</code></pre>
-<pre class="r"><code># transpose
+<pre class="r"><code># transpose die Daten in einer Vertikalen Anordnung
 klima.data.2 &lt;- t(klima.data.1)
-
-# remove unused rows
+klima.data.2</code></pre>
+<pre><code>##     1                      2                     
+##     &quot;Max. Temperatur (°C)&quot; &quot;Min. Temperatur (°C)&quot;
+## Jan &quot;2,8&quot;                  &quot;-3,6&quot;                
+## Feb &quot;4,7&quot;                  &quot;-3,1&quot;                
+## Mär &quot;9,5&quot;                  &quot;0,2&quot;                 
+## Apr &quot;13,4&quot;                 &quot;3,0&quot;                 
+## Mai &quot;18,2&quot;                 &quot;7,4&quot;                 
+## Jun &quot;21,6&quot;                 &quot;10,5&quot;                
+## Jul &quot;24,3&quot;                 &quot;12,5&quot;                
+## Aug &quot;23,7&quot;                 &quot;12,3&quot;                
+## Sep &quot;19,1&quot;                 &quot;8,9&quot;                 
+## Okt &quot;13,8&quot;                 &quot;5,4&quot;                 
+## Nov &quot;7,3&quot;                  &quot;0,4&quot;                 
+## Dez &quot;3,5&quot;                  &quot;-2,3&quot;                
+##     &quot;Ø&quot;                    &quot;Ø&quot;                   
+##     &quot;13,5&quot;                 &quot;4,3&quot;</code></pre>
+<pre class="r"><code># Unnötige Zeilen entfernen
 klima.data.3 &lt;- klima.data.2[-c(1,14,15),]
-
 klima.data.3</code></pre>
 <pre><code>##     1      2     
 ## Jan &quot;2,8&quot;  &quot;-3,6&quot;
@@ -480,92 +494,28 @@ klima.data.3</code></pre>
 ## Okt &quot;13,8&quot; &quot;5,4&quot; 
 ## Nov &quot;7,3&quot;  &quot;0,4&quot; 
 ## Dez &quot;3,5&quot;  &quot;-2,3&quot;</code></pre>
-<pre class="r"><code>for (i in 1:12){
-  for (j in 1:2){
+<pre class="r"><code># Spalten - und Zeilennamen setzen
+colnames(klima.data.3) &lt;- c(&quot;Max&quot;, &quot;Min&quot;)
+rownames(klima.data.3) &lt;- c(&quot;Januar&quot;, &quot;Februar&quot;, &quot;März&quot;, &quot;April&quot;, &quot;Mai&quot;, &quot;Juni&quot;,
+                             &quot;Juli&quot;, &quot;August&quot;, &quot;September&quot;, &quot;Oktober&quot;, &quot;November&quot;, &quot;Dezember&quot; )
+
+# Vorbereiten für die Konversion der Werten von String in Dezimalzahlen
+for (i in 1:nrow(klima.data.3)){
+  for (j in 1:ncol(klima.data.3)){
     klima.data.3[i,j] &lt;- str_replace(klima.data.3[i,j], &quot;,&quot;, &quot;.&quot;)
   }
 }
 
-colnames(klima.data.3) &lt;- c(&quot;Max&quot;, &quot;Min&quot;)
-
-klima.data.3</code></pre>
-<pre><code>##     Max    Min   
-## Jan &quot;2.8&quot;  &quot;-3.6&quot;
-## Feb &quot;4.7&quot;  &quot;-3.1&quot;
-## Mär &quot;9.5&quot;  &quot;0.2&quot; 
-## Apr &quot;13.4&quot; &quot;3.0&quot; 
-## Mai &quot;18.2&quot; &quot;7.4&quot; 
-## Jun &quot;21.6&quot; &quot;10.5&quot;
-## Jul &quot;24.3&quot; &quot;12.5&quot;
-## Aug &quot;23.7&quot; &quot;12.3&quot;
-## Sep &quot;19.1&quot; &quot;8.9&quot; 
-## Okt &quot;13.8&quot; &quot;5.4&quot; 
-## Nov &quot;7.3&quot;  &quot;0.4&quot; 
-## Dez &quot;3.5&quot;  &quot;-2.3&quot;</code></pre>
-<pre class="r"><code>klima.data.df &lt;- as.data.frame(klima.data.3)
-
-klima.data.df</code></pre>
-<pre><code>##      Max  Min
-## Jan  2.8 -3.6
-## Feb  4.7 -3.1
-## Mär  9.5  0.2
-## Apr 13.4  3.0
-## Mai 18.2  7.4
-## Jun 21.6 10.5
-## Jul 24.3 12.5
-## Aug 23.7 12.3
-## Sep 19.1  8.9
-## Okt 13.8  5.4
-## Nov  7.3  0.4
-## Dez  3.5 -2.3</code></pre>
-<pre class="r"><code>str(klima.data.df)</code></pre>
-<pre><code>## 'data.frame':    12 obs. of  2 variables:
-##  $ Max: Factor w/ 12 levels &quot;13.4&quot;,&quot;13.8&quot;,..: 5 10 12 1 3 6 8 7 4 2 ...
-##   ..- attr(*, &quot;names&quot;)= chr  &quot;Jan&quot; &quot;Feb&quot; &quot;Mär&quot; &quot;Apr&quot; ...
-##  $ Min: Factor w/ 12 levels &quot;-2.3&quot;,&quot;-3.1&quot;,..: 3 2 4 9 11 6 8 7 12 10 ...
-##   ..- attr(*, &quot;names&quot;)= chr  &quot;Jan&quot; &quot;Feb&quot; &quot;Mär&quot; &quot;Apr&quot; ...</code></pre>
-<pre class="r"><code>klima.data.df$Min &lt;- as.numeric(as.character(klima.data.df$Min))
+# Konversion zu einer Data Frame und zu Dezimalzahlen
+klima.data.df &lt;- as.data.frame(klima.data.3)
+klima.data.df$Min &lt;- as.numeric(as.character(klima.data.df$Min))
 klima.data.df$Max &lt;- as.numeric(as.character(klima.data.df$Max))
 
-klima.data.df</code></pre>
-<pre><code>##      Max  Min
-## Jan  2.8 -3.6
-## Feb  4.7 -3.1
-## Mär  9.5  0.2
-## Apr 13.4  3.0
-## Mai 18.2  7.4
-## Jun 21.6 10.5
-## Jul 24.3 12.5
-## Aug 23.7 12.3
-## Sep 19.1  8.9
-## Okt 13.8  5.4
-## Nov  7.3  0.4
-## Dez  3.5 -2.3</code></pre>
-<pre class="r"><code>str(klima.data.df)</code></pre>
-<pre><code>## 'data.frame':    12 obs. of  2 variables:
-##  $ Max: num  2.8 4.7 9.5 13.4 18.2 21.6 24.3 23.7 19.1 13.8 ...
-##  $ Min: num  -3.6 -3.1 0.2 3 7.4 10.5 12.5 12.3 8.9 5.4 ...</code></pre>
-<pre class="r"><code>rownames(klima.data.df) &lt;- c(&quot;Januar&quot;, &quot;Februar&quot;, &quot;März&quot;, &quot;April&quot;, &quot;Mai&quot;, &quot;Juni&quot;,
-                             &quot;Juli&quot;, &quot;August&quot;, &quot;September&quot;, &quot;Oktober&quot;, &quot;November&quot;, &quot;Dezember&quot; )
-
-klima.data.df</code></pre>
-<pre><code>##            Max  Min
-## Januar     2.8 -3.6
-## Februar    4.7 -3.1
-## März       9.5  0.2
-## April     13.4  3.0
-## Mai       18.2  7.4
-## Juni      21.6 10.5
-## Juli      24.3 12.5
-## August    23.7 12.3
-## September 19.1  8.9
-## Oktober   13.8  5.4
-## November   7.3  0.4
-## Dezember   3.5 -2.3</code></pre>
-<pre class="r"><code>klima.data.df %&gt;%
+# Output zu einer Tabelle in HTML
+klima.data.df %&gt;%
   kable( col.names = c(&quot;Maximum&quot; , &quot;Minimum&quot;)) %&gt;%
   kable_styling(bootstrap_options = c(&quot;striped&quot;)) %&gt;%
-  footnote(general = paste(&quot;Klima Daten der Stadt Bern (CH). Abgerufen am &quot; , Sys.Date(), &quot; von : &quot;, url ))</code></pre>
+  footnote(general = paste(&quot;Klima Daten der Stadt Bern (CH). Abgerufen am &quot; , format(Sys.Date(), format=&quot;%d.%m.%Y&quot;), &quot; von : &quot;, url ))</code></pre>
 <table class="table table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -721,7 +671,7 @@ Dezember
 </tr>
 <tr>
 <td style="padding: 0; border: 0;" colspan="100%">
-<sup></sup> Klima Daten der Stadt Bern (CH). Abgerufen am 2019-01-06 von : <a href="https://de.wikipedia.org/wiki/Bern#Klima" class="uri">https://de.wikipedia.org/wiki/Bern#Klima</a>
+<sup></sup> Klima Daten der Stadt Bern (CH). Abgerufen am 06.01.2019 von : <a href="https://de.wikipedia.org/wiki/Bern#Klima" class="uri">https://de.wikipedia.org/wiki/Bern#Klima</a>
 </td>
 </tr>
 </tfoot>
