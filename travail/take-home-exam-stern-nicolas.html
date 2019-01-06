@@ -183,10 +183,13 @@ library(stargazer)</code></pre>
 <div id="daten-laden" class="section level3">
 <h3>Daten Laden</h3>
 <pre class="r"><code># load data
-ebay &lt;- read.dta(&quot;http://www.farys.org/daten/ebay.dta&quot;)
+#ebay &lt;- read.dta(&quot;http://www.farys.org/daten/ebay.dta&quot;)
+ebay &lt;- read.dta(&quot;ebay-2019-01-06.dta&quot;)
 
-# export locally to keep a copy
-write.dta(ebay, &quot;ebay.dta&quot;)
+# export locally to keep a copy with the date of retrieval
+today &lt;- Sys.Date()
+filename &lt;- paste(&quot;ebay-&quot;, today, &quot;.dta&quot;,sep=&quot;&quot;)
+#write.dta(ebay, filename)
 
 # examine data after loading
 head(ebay)</code></pre>
