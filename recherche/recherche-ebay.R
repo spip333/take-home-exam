@@ -386,3 +386,17 @@ library(car)
 scatter3d(Prestige$income,Prestige$prestige,Prestige$education, fit="linear") 
 
 fit <- lm(prestige ~ education + income, data=Prestige)
+
+# wie viele Datensätze mit 0 in "sold"?
+nrow(ebay)
+
+nrow(ebay [ebay$sold == 0,])
+
+no.sold<- ebay %>%
+  dplyr::filter(sold > 0) %>%
+  mutate(
+    model = str_trim(sub("\\(.+\\)", "", subcat)),
+    rating =  sepos / (seneg + sepos),
+    makellos = rating > 0.98
+  ) %>%
+  dplyr::select(price, model, rating, makellos, listpic)

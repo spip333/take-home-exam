@@ -1,17 +1,10 @@
 ##########################################################
-# Recherche	
+# Recherche	webscrapping
 ##########################################################
 
 library(dplyr)
 library(foreign)
 
 #========================================================
-# load data
-
-ebay <- read.dta("http://www.farys.org/daten/ebay.dta")
-str(ebay)
-head(ebay)
-
-#========================================================
-# load data
+# load data from https://de.wikipedia.org/wiki/Bern#Klima
 

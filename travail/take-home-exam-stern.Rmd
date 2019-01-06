@@ -194,8 +194,11 @@ Konzentrieren Sie sich auf die ersten drei Zeilen (Monat, Max. Temperatur, Min. 
 Example:
 
   load("the_tabelle.RData")
+  
   suppressWarnings(library(knitr, warn.conflicts = FALSE, quietly=TRUE))
   
 ## Lösung Schritt per Schritt
+
+
 
 
