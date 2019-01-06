@@ -134,17 +134,18 @@ $(document).ready(function () {
 <li><a href="#aufgabe">Aufgabe</a></li>
 <li><a href="#losung-schritt-per-schritt">Lösung Schritt per Schritt</a><ul>
 <li><a href="#daten-laden">Daten Laden</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#todo-change-file-saving">TODO: Change file saving</a><ul>
 <li><a href="#daten-fur-die-analyse-vorbereiten">Daten für die Analyse vorbereiten:</a></li>
 <li><a href="#daten-grafisch-darstellen">Daten grafisch darstellen</a></li>
 <li><a href="#auswertung">Auswertung</a></li>
 <li><a href="#exportieren-einer-regressionstabelle-die-beide-modelle-beinhaltet.">Exportieren einer Regressionstabelle, die beide Modelle beinhaltet.</a></li>
 </ul></li>
+</ul></li>
 <li><a href="#webscraping-tidying">Webscraping / Tidying</a><ul>
 <li><a href="#aufgabe-1">Aufgabe</a></li>
-<li><a href="#losung-schritt-per-schritt-1">Lösung Schritt per Schritt</a></li>
+<li><a href="#losung-schritt-per-schritt-1">Lösung Schritt per Schritt</a><ul>
+<li><a href="#daten-laden-und-vorbereiten">Daten laden und Vorbereiten</a></li>
+<li><a href="#daten-in-einer-html-tabelle-darstellen">Daten in einer HTML Tabelle darstellen</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -185,21 +186,17 @@ library(stargazer)</code></pre>
 <h2>Lösung Schritt per Schritt</h2>
 <div id="daten-laden" class="section level3">
 <h3>Daten Laden</h3>
-</div>
-</div>
-</div>
-<div id="todo-change-file-saving" class="section level1">
-<h1>TODO: Change file saving</h1>
-<pre class="r"><code># load data
+<p>TODO: Change file saving</p>
+<pre class="r"><code># Daten Laden
 #ebay &lt;- read.dta(&quot;http://www.farys.org/daten/ebay.dta&quot;)
 ebay &lt;- read.dta(&quot;ebay-2019-01-06.dta&quot;)
 
-# export locally to keep a copy with the date of retrieval
+# Export lokal, um eine Kopie aufzubewahren. Datei wird mit Datum gekennzeichnet
 today &lt;- Sys.Date()
 filename &lt;- paste(&quot;ebay-&quot;, today, &quot;.dta&quot;,sep=&quot;&quot;)
 #write.dta(ebay, filename)
 
-# examine data after loading
+# Daten nach Laden prüfen
 head(ebay)</code></pre>
 <pre><code>##   sold  price             subcat sprice                  listpic listbold
 ## 1    1 221.00     Nokia 6230 (3)      1 auction-has-picture icon        0
@@ -215,6 +212,7 @@ head(ebay)</code></pre>
 ## 4    11     0       0
 ## 5    16     0       0
 ## 6    81     1       1</code></pre>
+</div>
 <div id="daten-fur-die-analyse-vorbereiten" class="section level3">
 <h3>Daten für die Analyse vorbereiten:</h3>
 <ul>
@@ -222,23 +220,23 @@ head(ebay)</code></pre>
 <li>Neue Spalten “rating” und “makellos” hinzufügen</li>
 <li>Zusätzlich zur Vorgabe eliminieren wir auch die Datensätze, die den Wert “0” im Attribut “sold” haben, weil für diese Datensätze, gibt es kein Verkaufspreis. Das ist ein Entscheid, das man vor Auge behalten soll, wenn man versucht, die Resultate zu interpretieren, weil die Anzahl nicht verkäufte Sätze nicht vernachlässigbar ist:</li>
 </ul>
-<pre class="r"><code># number of not sold phones:
+<pre class="r"><code># Anz. Auktionen, die nicht mit einem Verkauf abgeschlossen wurden
 nrow(ebay [ebay$sold == 0,])</code></pre>
 <pre><code>## [1] 230</code></pre>
 <ul>
 <li>Rausfiltrieren und Vorbereitung der Daten :</li>
 </ul>
-<pre class="r"><code># transform primary data for the analysis
+<pre class="r"><code># Raw Daten für die Analyse Vorbereiten
 transformed.ebay &lt;- ebay %&gt;%
-  dplyr::filter(sepos &gt;= 12) %&gt;% # filter out rows with &lt; 12 positive ratings
-  dplyr::filter(sold &gt; 0) %&gt;% # filter out rows which did not lead to a sale
+  dplyr::filter(sepos &gt;= 12) %&gt;% # ausfiltrieren Zeilen mit &lt; 12 positive ratings
+  dplyr::filter(sold &gt; 0) %&gt;% # ausfiltrieren Zeilen, die nicht zu einer Verkauf gefuehrt haben
   mutate(
-    rating =  sepos / (seneg + sepos), # new column rating (proportion of positive ratings)
-    makellos = rating &gt; 0.98 # new column makellos, logical attribute for rows with &gt; 98% positiv ratings
+    rating =  sepos / (seneg + sepos), # Neue Spalte rating (Anteil positive ratings)
+    makellos = rating &gt; 0.98 # Neue Spalte makellos, logische Attribute für Zeilen mit &gt; 98% positive ratings
   ) %&gt;%
   dplyr::select(price, model = subcat, rating, makellos, listpic) 
 
-# examine data after transformation:
+# Daten nach Transformation prüfen:
 head(transformed.ebay)</code></pre>
 <pre><code>##    price              model    rating makellos                  listpic
 ## 1 221.00     Nokia 6230 (3) 0.9867374     TRUE auction-has-picture icon
@@ -261,13 +259,13 @@ head(transformed.ebay)</code></pre>
 <li><p>die Handy Modellnamen haben alle eine Endung im Klammer, die die Lesbarkeit verschlechtert. Mit String Manipulation sollten die Handy-Namen gekürzt werden.</p></li>
 </ul></li>
 </ul>
-<pre class="r"><code># drop unused levels
+<pre class="r"><code># unnötige Levels droppen
 transformed.ebay &lt;- droplevels(transformed.ebay)
 
-# remove &quot;(xy)&quot; ending in the cell phone names
+# Endung &quot;(xy)&quot; entfernen
 transformed.ebay$model &lt;- str_trim(sub(&quot;\\(.+\\)&quot;, &quot;&quot;, transformed.ebay$model))
 
-# examine data after transformation:
+# Daten nach Transformation prüfen:
 head(transformed.ebay)</code></pre>
 <pre><code>##    price         model    rating makellos                  listpic
 ## 1 221.00    Nokia 6230 0.9867374     TRUE auction-has-picture icon
@@ -372,7 +370,7 @@ summary(model.1)</code></pre>
 ##         166.38107          45.75911          20.89313          10.87611 
 ## modelSamsung E800    modelSony T610    modelSony T630            rating 
 ##          54.27877         -72.26175         -42.40887          21.90203</code></pre>
-<pre class="r"><code># Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten.   
+<pre class="r"><code># Modell 2 soll zusätzlich die Variable listpic beinhalten.   
 model.2 &lt;- lm(price ~ model + rating + listpic, data = transformed.ebay)
 summary(model.2)</code></pre>
 <pre><code>## 
@@ -427,6 +425,7 @@ summary(model.2)</code></pre>
 <pre class="r"><code>stargazer(model.1, model.2, type = &quot;html&quot;, style = &quot;default&quot;, out = &quot;ebayMobilAuktionModell.htm&quot;)</code></pre>
 </div>
 </div>
+</div>
 <div id="webscraping-tidying" class="section level1">
 <h1>Webscraping / Tidying</h1>
 <div id="aufgabe-1" class="section level2">
@@ -439,18 +438,20 @@ summary(model.2)</code></pre>
 </div>
 <div id="losung-schritt-per-schritt-1" class="section level2">
 <h2>Lösung Schritt per Schritt</h2>
+<div id="daten-laden-und-vorbereiten" class="section level3">
+<h3>Daten laden und Vorbereiten</h3>
 <pre class="r"><code>library(rvest)</code></pre>
 <pre><code>## Loading required package: xml2</code></pre>
 <pre class="r"><code>library(kableExtra)
 
-# load data
+# Daten laden
 url &lt;- &quot;https://de.wikipedia.org/wiki/Bern#Klima&quot;
 
 download.file(url, destfile = 'klima-daten-bern-wikipedia.html')
 klima.data.raw &lt;- read_html('klima-daten-bern-wikipedia.html')
 klima.data &lt;- html_table(klima.data.raw, fill=TRUE, header=TRUE)[[6]]
 
-# filtriren die Zeilen mit Spaltennamen, min und max
+# filtrieren die Zeilen mit Spaltennamen, min und max
 klima.data.1 &lt;- klima.data[1:2,]
 klima.data.1</code></pre>
 <pre><code>##                         Jan  Feb Mär  Apr  Mai  Jun  Jul  Aug  Sep  Okt
@@ -509,10 +510,11 @@ for (i in 1:nrow(klima.data.3)){
 # Konversion zu einer Data Frame und zu Dezimalzahlen
 klima.data.df &lt;- as.data.frame(klima.data.3)
 klima.data.df$Min &lt;- as.numeric(as.character(klima.data.df$Min))
-klima.data.df$Max &lt;- as.numeric(as.character(klima.data.df$Max))
-
-# Output zu einer Tabelle in HTML
-klima.data.df %&gt;%
+klima.data.df$Max &lt;- as.numeric(as.character(klima.data.df$Max))</code></pre>
+</div>
+<div id="daten-in-einer-html-tabelle-darstellen" class="section level3">
+<h3>Daten in einer HTML Tabelle darstellen</h3>
+<pre class="r"><code>klima.data.df %&gt;%
   kable( col.names = c(&quot;Maximum&quot; , &quot;Minimum&quot;)) %&gt;%
   kable_styling(bootstrap_options = c(&quot;striped&quot;)) %&gt;%
   footnote(general = paste(&quot;Klima Daten der Stadt Bern (CH). Abgerufen am &quot; , format(Sys.Date(), format=&quot;%d.%m.%Y&quot;), &quot; von : &quot;, url ))</code></pre>
@@ -676,6 +678,7 @@ Dezember
 </tr>
 </tfoot>
 </table>
+</div>
 </div>
 </div>
 

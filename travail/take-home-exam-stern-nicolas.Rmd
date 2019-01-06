@@ -52,19 +52,19 @@ Rechnen Sie zwei kleine Regressionsmodelle für den Preis von verkauften Geräte
 
 ### Daten Laden
 
-# TODO: Change file saving
+TODO: Change file saving
 
 ```{r}
-# load data
+# Daten Laden
 #ebay <- read.dta("http://www.farys.org/daten/ebay.dta")
 ebay <- read.dta("ebay-2019-01-06.dta")
 
-# export locally to keep a copy with the date of retrieval
+# Export lokal, um eine Kopie aufzubewahren. Datei wird mit Datum gekennzeichnet
 today <- Sys.Date()
 filename <- paste("ebay-", today, ".dta",sep="")
 #write.dta(ebay, filename)
 
-# examine data after loading
+# Daten nach Laden prüfen
 head(ebay)
 ```
 
@@ -74,23 +74,23 @@ head(ebay)
 - Zusätzlich zur Vorgabe eliminieren wir auch die Datensätze, die den Wert "0" im Attribut "sold" haben, weil für diese Datensätze, gibt es kein Verkaufspreis. Das ist ein Entscheid, das man vor Auge behalten soll, wenn man versucht, die Resultate zu interpretieren, weil die Anzahl nicht verkäufte Sätze nicht vernachlässigbar ist:
 
 ```{r}
-# number of not sold phones:
+# Anz. Auktionen, die nicht mit einem Verkauf abgeschlossen wurden
 nrow(ebay [ebay$sold == 0,])
 ```
 - Rausfiltrieren und Vorbereitung der Daten : 
 
 ```{r}
-# transform primary data for the analysis
+# Raw Daten für die Analyse Vorbereiten
 transformed.ebay <- ebay %>%
-  dplyr::filter(sepos >= 12) %>% # filter out rows with < 12 positive ratings
-  dplyr::filter(sold > 0) %>% # filter out rows which did not lead to a sale
+  dplyr::filter(sepos >= 12) %>% # ausfiltrieren Zeilen mit < 12 positive ratings
+  dplyr::filter(sold > 0) %>% # ausfiltrieren Zeilen, die nicht zu einer Verkauf gefuehrt haben
   mutate(
-    rating =  sepos / (seneg + sepos), # new column rating (proportion of positive ratings)
-    makellos = rating > 0.98 # new column makellos, logical attribute for rows with > 98% positiv ratings
+    rating =  sepos / (seneg + sepos), # Neue Spalte rating (Anteil positive ratings)
+    makellos = rating > 0.98 # Neue Spalte makellos, logische Attribute für Zeilen mit > 98% positive ratings
   ) %>%
   dplyr::select(price, model = subcat, rating, makellos, listpic) 
 
-# examine data after transformation:
+# Daten nach Transformation prüfen:
 head(transformed.ebay)
 str(transformed.ebay)
 ```
@@ -101,13 +101,13 @@ str(transformed.ebay)
     - die Handy Modellnamen haben alle eine Endung im Klammer, die die Lesbarkeit verschlechtert. Mit String Manipulation sollten die Handy-Namen gekürzt werden.
     
 ```{r}
-# drop unused levels
+# unnötige Levels droppen
 transformed.ebay <- droplevels(transformed.ebay)
 
-# remove "(xy)" ending in the cell phone names
+# Endung "(xy)" entfernen
 transformed.ebay$model <- str_trim(sub("\\(.+\\)", "", transformed.ebay$model))
 
-# examine data after transformation:
+# Daten nach Transformation prüfen:
 head(transformed.ebay)
 ```
 - In dieser Form sind die Daten bereit für eine grafische Darstellung.
@@ -172,7 +172,7 @@ model.1 <- lm(price ~ model + rating, data = transformed.ebay)
 summary(model.1)
 coef(model.1)
 
-# Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten.   
+# Modell 2 soll zusätzlich die Variable listpic beinhalten.   
 model.2 <- lm(price ~ model + rating + listpic, data = transformed.ebay)
 summary(model.2)
 coef(model.2)
@@ -205,18 +205,20 @@ Example:
   
 ## Lösung Schritt per Schritt
 
+### Daten laden und Vorbereiten
+
 ```{r}
 library(rvest)
 library(kableExtra)
 
-# load data
+# Daten laden
 url <- "https://de.wikipedia.org/wiki/Bern#Klima"
 
 download.file(url, destfile = 'klima-daten-bern-wikipedia.html')
 klima.data.raw <- read_html('klima-daten-bern-wikipedia.html')
 klima.data <- html_table(klima.data.raw, fill=TRUE, header=TRUE)[[6]]
 
-# filtriren die Zeilen mit Spaltennamen, min und max
+# filtrieren die Zeilen mit Spaltennamen, min und max
 klima.data.1 <- klima.data[1:2,]
 klima.data.1
 
@@ -245,11 +247,8 @@ klima.data.df <- as.data.frame(klima.data.3)
 klima.data.df$Min <- as.numeric(as.character(klima.data.df$Min))
 klima.data.df$Max <- as.numeric(as.character(klima.data.df$Max))
 ```
-
+### Daten in einer HTML Tabelle darstellen
 ```{r}
-
-
-# Output zu einer Tabelle in HTML
 klima.data.df %>%
   kable( col.names = c("Maximum" , "Minimum")) %>%
   kable_styling(bootstrap_options = c("striped")) %>%

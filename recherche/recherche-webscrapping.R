@@ -75,11 +75,13 @@ colnames(klima.data.2) <- names
 
 klima.data.2
 
-klima.data.3 <- klima.data.2[-c(1,14),]
+ <- klima.data.2[-c(1,14),]
 
 for (i in 1:13){
   print(klima.data.3[i,])
 }
+
+nrow(klima.data.3)
 
 nrow(klima.data.3)
 ncol(klima.data.3)
