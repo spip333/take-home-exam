@@ -192,8 +192,7 @@ library(stargazer)</code></pre>
 ebay &lt;- read.dta(&quot;ebay-2019-01-06.dta&quot;)
 
 # Export lokal, um eine Kopie aufzubewahren. Datei wird mit Datum gekennzeichnet
-today &lt;- Sys.Date()
-filename &lt;- paste(&quot;ebay-&quot;, today, &quot;.dta&quot;,sep=&quot;&quot;)
+filename &lt;- paste(&quot;ebay-&quot;, Sys.Date(), &quot;.dta&quot;,sep=&quot;&quot;)
 #write.dta(ebay, filename)
 
 # Daten nach Laden prüfen
@@ -447,8 +446,9 @@ summary(model.2)</code></pre>
 # Daten laden
 url &lt;- &quot;https://de.wikipedia.org/wiki/Bern#Klima&quot;
 
-download.file(url, destfile = 'klima-daten-bern-wikipedia.html')
-klima.data.raw &lt;- read_html('klima-daten-bern-wikipedia.html')
+filename &lt;- paste(&quot;klima-daten-bern-wikipedia-&quot;, Sys.Date(), &quot;.html&quot;,sep=&quot;&quot;)
+download.file(url, destfile = filename)
+klima.data.raw &lt;- read_html(filename)
 klima.data &lt;- html_table(klima.data.raw, fill=TRUE, header=TRUE)[[6]]
 
 # filtrieren die Zeilen mit Spaltennamen, min und max

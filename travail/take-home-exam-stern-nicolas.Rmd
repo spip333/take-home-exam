@@ -60,8 +60,7 @@ TODO: Change file saving
 ebay <- read.dta("ebay-2019-01-06.dta")
 
 # Export lokal, um eine Kopie aufzubewahren. Datei wird mit Datum gekennzeichnet
-today <- Sys.Date()
-filename <- paste("ebay-", today, ".dta",sep="")
+filename <- paste("ebay-", Sys.Date(), ".dta",sep="")
 #write.dta(ebay, filename)
 
 # Daten nach Laden prüfen
@@ -214,8 +213,9 @@ library(kableExtra)
 # Daten laden
 url <- "https://de.wikipedia.org/wiki/Bern#Klima"
 
-download.file(url, destfile = 'klima-daten-bern-wikipedia.html')
-klima.data.raw <- read_html('klima-daten-bern-wikipedia.html')
+filename <- paste("klima-daten-bern-wikipedia-", Sys.Date(), ".html",sep="")
+download.file(url, destfile = filename)
+klima.data.raw <- read_html(filename)
 klima.data <- html_table(klima.data.raw, fill=TRUE, header=TRUE)[[6]]
 
 # filtrieren die Zeilen mit Spaltennamen, min und max
