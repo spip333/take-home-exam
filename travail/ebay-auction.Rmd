@@ -2,7 +2,10 @@
 title: "Tooling und Datenmanagement - Take Home Exam"
 author: "Nicolas Stern"
 date: "3 janvier 2019"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
@@ -167,6 +170,8 @@ summary(model.2)
 coef(model.2)
 ```
 
+
+
 #### Interpretation:
 
 - Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis? 
@@ -178,3 +183,19 @@ coef(model.2)
 ```{r results='hide'}
 stargazer(model.1, model.2, type = "html", style = "default", out = "ebayMobilAuktionModell.htm")
 ```
+
+# Webscraping / Tidying
+
+## Aufgabe
+Betrachten Sie den Wikipedia-Eintrag zum Klima in Bern: https://de.wikipedia.org/wiki/Bern#Klima. Lesen Sie die Tabelle “Monatliche Durchschnittstemperaturen und -niederschläge für Bern 1981-2010” ein. Verwenden Sie hierfür die Tools aus dem Kapitel “Datenimport aus HTML/XML”“, z.B. das Package rvest.
+
+Konzentrieren Sie sich auf die ersten drei Zeilen (Monat, Max. Temperatur, Min. Temperatur) und säubern Sie die Daten (vgl. Kapitel 15.1.):
+
+Example:
+
+  load("the_tabelle.RData")
+  suppressWarnings(library(knitr, warn.conflicts = FALSE, quietly=TRUE))
+  
+## Lösung Schritt per Schritt
+
+

@@ -127,6 +127,22 @@ $(document).ready(function () {
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#ebay-auktionen">Ebay-Auktionen</a><ul>
+<li><a href="#aufgabe">Aufgabe</a></li>
+<li><a href="#losung-schritt-per-schritt">Lösung Schritt per Schritt</a><ul>
+<li><a href="#daten-laden-und-vorbereiten">Daten Laden und vorbereiten</a></li>
+<li><a href="#daten-grafisch-darstellen">Daten grafisch darstellen</a></li>
+<li><a href="#auswertung">Auswertung</a></li>
+<li><a href="#exportieren-einer-regressionstabelle-die-beide-modelle-beinhaltet.">Exportieren einer Regressionstabelle, die beide Modelle beinhaltet.</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#webscraping-tidying">Webscraping / Tidying</a><ul>
+<li><a href="#aufgabe-1">Aufgabe</a></li>
+</ul></li>
+</ul>
+</div>
 
 <p>CAS - Datenanalyse 2018-2019, Lösung zur Take-Home Exam, Fach Tooling und Datenmanagment</p>
 <pre class="r"><code># init environment
@@ -397,6 +413,16 @@ summary(model.2)</code></pre>
 <h3>Exportieren einer Regressionstabelle, die beide Modelle beinhaltet.</h3>
 <pre class="r"><code>stargazer(model.1, model.2, type = &quot;html&quot;, style = &quot;default&quot;, out = &quot;ebayMobilAuktionModell.htm&quot;)</code></pre>
 </div>
+</div>
+</div>
+<div id="webscraping-tidying" class="section level1">
+<h1>Webscraping / Tidying</h1>
+<div id="aufgabe-1" class="section level2">
+<h2>Aufgabe</h2>
+<p>Betrachten Sie den Wikipedia-Eintrag zum Klima in Bern: <a href="https://de.wikipedia.org/wiki/Bern#Klima" class="uri">https://de.wikipedia.org/wiki/Bern#Klima</a>. Lesen Sie die Tabelle “Monatliche Durchschnittstemperaturen und -niederschläge für Bern 1981-2010” ein. Verwenden Sie hierfür die Tools aus dem Kapitel “Datenimport aus HTML/XML”“, z.B. das Package rvest.</p>
+<p>Konzentrieren Sie sich auf die ersten drei Zeilen (Monat, Max. Temperatur, Min. Temperatur) und säubern Sie die Daten (vgl. Kapitel 15.1.):</p>
+<p>Example:</p>
+<p>load(“the_tabelle.RData”) suppressWarnings(library(knitr, warn.conflicts = FALSE, quietly=TRUE))</p>
 </div>
 </div>
 
