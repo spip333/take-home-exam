@@ -1,5 +1,5 @@
 ---
-title: "Take Home Exam"
+title: "Tooling und Datenmanagement - Take Home Exam"
 author: "Nicolas Stern"
 date: "3 janvier 2019"
 output: html_document
@@ -60,9 +60,16 @@ head(ebay)
 - Daten für die Analyse vorbereiten: 
     - Rausfiltern der Datensätze, bei welcher weniger als 12 positiven ratings vorliegen 
     - Neue Spalten "rating" und "makellos" hinzufügen
-    - Zusätzlich zur Vorgabe eliminiren wir auch die Datensätze, die den Wert "0" im Attribut "sold" haben, weil für diese Datensätze, gibt es kein Verkaufspreis. 
+    - Zusätzlich zur Vorgabe eliminieren wir auch die Datensätze, die den Wert "0" im Attribut "sold" haben, weil für diese Datensätze, gibt es kein Verkaufspreis. Das ist ein Entscheid, das man vor Auge behalten soll, wenn man versucht, die Resultate zu interpretieren, weil die Anzahl nicht verkäufte Sätze nicht vernachlässigbar ist:
 
 ```{r}
+# number of not sold phones:
+nrow(ebay [ebay$sold == 0,])
+```
+- Rausfiltrieren und Vorbereitung der Daten : 
+
+```{r}
+# transform primary data for the analysis
 transformed.ebay <- ebay %>%
   dplyr::filter(sepos >= 12) %>% # filter out rows with < 12 positive ratings
   dplyr::filter(sold > 0) %>% # filter out rows which did not lead to a sale
@@ -72,13 +79,15 @@ transformed.ebay <- ebay %>%
   ) %>%
   dplyr::select(price, model = subcat, rating, makellos, listpic) 
 
-# Daten nach Transformation prüfen:
+# examine data after transformation:
 head(transformed.ebay)
 str(transformed.ebay)
 ```
-- An dieser Stelle kann man folgendes feststellen: 
+- Man stellt folgendes fest :
+    
     - es sind 106 Levels im Attribut "subcat". Unbenötigten Levels sollen gelöscht werden.
-    - die Handy Modelnamen haben alle eine Endung im Klammer, die die Lesbarkeit verschlechtert. Mit String Manipulation sollten die Handy-Namen gekürzt werden.
+    
+    - die Handy Modellnamen haben alle eine Endung im Klammer, die die Lesbarkeit verschlechtert. Mit String Manipulation sollten die Handy-Namen gekürzt werden.
     
 ```{r}
 # drop unused levels
@@ -87,7 +96,7 @@ transformed.ebay <- droplevels(transformed.ebay)
 # remove "(xy)" ending in the cell phone names
 transformed.ebay$model <- str_trim(sub("\\(.+\\)", "", transformed.ebay$model))
 
-# examine how the data looks now
+# examine data after transformation:
 head(transformed.ebay)
 ```
 - In dieser Form sind die Daten bereit für eine grafische Darstellung.
@@ -136,6 +145,7 @@ legend("bottomleft",
 mtext("Handy Modell", side = 1, line = 7, cex = 1)
 dev.off()
 ```
+#### Interpretation:
 
 - Erzielen (rein optisch) die Verkäufer mit makellosem Rating einen höheren Verkaufspreis?
 
@@ -157,11 +167,14 @@ summary(model.2)
 coef(model.2)
 ```
 
-- Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis? 
-    - Antwort: Ja, die Verkaufspreise beeinflussen den verkaufspreis mit dem Koeffizienzintervall von 6.73 
+#### Interpretation:
 
-- Exportieren einer Regressionstabelle, die beide Modelle beinhaltet.
+- Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis? 
+
+    - Antwort: Ja, die Thumbnails beeinflussen den Verkaufspreis mit dem Koeffizienzintervall von 6.73 
+
+###  Exportieren einer Regressionstabelle, die beide Modelle beinhaltet.
 
 ```{r results='hide'}
-stargazer(model.1, model.2, type = "html", style = "default", out = "model.htm")
+stargazer(model.1, model.2, type = "html", style = "default", out = "ebayMobilAuktionModell.htm")
 ```
