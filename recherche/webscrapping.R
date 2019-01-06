@@ -53,6 +53,5 @@ rownames(klima.data.df) <- c("Januar", "Februar", "März", "April", "Mai", "Juni
 
 klima.data.df
 
-library("kableExtra")
 
 kable(klima.data.df)

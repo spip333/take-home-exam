@@ -124,4 +124,17 @@ rownames(klima.data.df) <- c("Januar", "Februar", "März", "April", "Mai", "Juni
 
 
 
+Sys.Date()
+?kable
+library(kableExtra)
+
+kable(klima.data.df, format="html", col.names = c("Minimum", "Maximum"))
+kable_styling()
+
+
+kable(head(mtcars[, 1:5]), format = "markdown")
+
+klima.data.df %>%
+  kable( col.names = c("Maximum" , "Minimum")) %>%
+  kable_styling()
 
