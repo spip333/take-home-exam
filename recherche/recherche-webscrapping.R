@@ -4,7 +4,6 @@
 
 library(dplyr)
 library(foreign)
-
 library(stringr)
 
 
@@ -100,7 +99,6 @@ for (i in 1:13){
 klima.data.3
 
 klima.data.df <- as.data.frame(klima.data.3)
-
 
 as.numeric(klima.data.3[1,1])
 mean(klima.data.df$max)
