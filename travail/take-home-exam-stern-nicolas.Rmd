@@ -52,16 +52,13 @@ Rechnen Sie zwei kleine Regressionsmodelle für den Preis von verkauften Geräte
 
 ### Daten Laden
 
-TODO: Change file saving
-
 ```{r}
 # Daten Laden
-#ebay <- read.dta("http://www.farys.org/daten/ebay.dta")
-ebay <- read.dta("ebay-2019-01-06.dta")
+ebay <- read.dta("http://www.farys.org/daten/ebay.dta")
 
 # Export lokal, um eine Kopie aufzubewahren. Datei wird mit Datum gekennzeichnet
 filename <- paste("ebay-", Sys.Date(), ".dta",sep="")
-#write.dta(ebay, filename)
+write.dta(ebay, filename)
 
 # Daten nach Laden prüfen
 head(ebay)
