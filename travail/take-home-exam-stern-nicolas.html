@@ -186,14 +186,14 @@ library(stargazer)</code></pre>
 <h2>Lösung Schritt per Schritt</h2>
 <div id="daten-laden" class="section level3">
 <h3>Daten Laden</h3>
-<p>TODO: Change file saving</p>
 <pre class="r"><code># Daten Laden
-#ebay &lt;- read.dta(&quot;http://www.farys.org/daten/ebay.dta&quot;)
-ebay &lt;- read.dta(&quot;ebay-2019-01-06.dta&quot;)
+ebay &lt;- read.dta(&quot;http://www.farys.org/daten/ebay.dta&quot;)
 
-# Export lokal, um eine Kopie aufzubewahren. Datei wird mit Datum gekennzeichnet
+# Export lokal, um eine Kopie aufzubewahren. 
+# Datei wird mit Datum gekennzeichnet (&quot;ebay-yyyy-mm--dd.dta&quot;)
+# Datei kann dann lokal geladen werden mit read.dta(&quot;ebay-yyyy-mm--dd.dta&quot;)
 filename &lt;- paste(&quot;ebay-&quot;, Sys.Date(), &quot;.dta&quot;,sep=&quot;&quot;)
-#write.dta(ebay, filename)
+write.dta(ebay, filename)
 
 # Daten nach Laden prüfen
 head(ebay)</code></pre>
@@ -673,7 +673,7 @@ Dezember
 </tr>
 <tr>
 <td style="padding: 0; border: 0;" colspan="100%">
-<sup></sup> Klima Daten der Stadt Bern (CH). Abgerufen am 06.01.2019 von : <a href="https://de.wikipedia.org/wiki/Bern#Klima" class="uri">https://de.wikipedia.org/wiki/Bern#Klima</a>
+<sup></sup> Klima Daten der Stadt Bern (CH). Abgerufen am 09.01.2019 von : <a href="https://de.wikipedia.org/wiki/Bern#Klima" class="uri">https://de.wikipedia.org/wiki/Bern#Klima</a>
 </td>
 </tr>
 </tfoot>
